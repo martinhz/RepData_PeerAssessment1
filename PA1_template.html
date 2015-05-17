@@ -55,11 +55,27 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 
 
+<p>M.van Heezik</p>
 <div id="loading-and-preprocessing-the-data" class="section level2">
 <h2>Loading and preprocessing the data</h2>
+<pre class="r"><code>data&lt;-read.csv(&quot;./activity.csv&quot;, na=&quot;NA&quot;)</code></pre>
 </div>
 <div id="what-is-mean-total-number-of-steps-taken-per-day" class="section level2">
 <h2>What is mean total number of steps taken per day?</h2>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: 'dplyr'
+## 
+## The following object is masked from 'package:stats':
+## 
+##     filter
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>data.summ &lt;-summarise_each(group_by(data, date ), funs(sum))
+#mean(data.summ$steps, na.rm = TRUE )</code></pre>
+<p>The mean total number of steps taken per day is: 1.076618910^{4}</p>
 </div>
 <div id="what-is-the-average-daily-activity-pattern" class="section level2">
 <h2>What is the average daily activity pattern?</h2>
