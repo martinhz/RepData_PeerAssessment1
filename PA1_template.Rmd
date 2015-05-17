@@ -31,12 +31,20 @@ plot(x=data.summ2$interval, y=data.summ2$steps, type="l",main="Average steps per
      xlab="interval", ylab="average steps")
 data.max<-data.summ2[which.max(data.summ2$steps),]
 
+#maximum average steps:  data.max[1,]$steps
+#and found at interval:  data.max[1,]$interval
+
 ```
 
 The maximum average steps is `r data.max[1,]$steps` and found at interval `r data.max[1,]$interval`
 
 
 ## Imputing missing values
+
+There are `r nrow(data[is.na(data$steps),])` missing values in the dataset  
+The missing values will be replaced with means (of the non-missing values) of the corresponding interval.
+
+
 ```{r}
 data.corrected <- merge(data[is.na(data$steps),c("interval","date")],data.summ[,c("interval","steps")],by="interval")
 data.combi<-rbind(data.corrected, data[!is.na(data$steps),])
@@ -44,15 +52,21 @@ data.combi<-rbind(data.corrected, data[!is.na(data$steps),])
 data.summ3 <-summarise_each(group_by(data.combi, date ), funs(sum))
 hist(data.summ3$steps,breaks=20,main="Histogram of Total steps per day (imputed data)")
 
+#missing values in the dataset: nrow(data[is.na(data$steps),])
+#The imputed mean total number of steps taken per day is: mean(data.summ3$steps, na.rm = TRUE )
+#The imputed median total number of steps taken per day is: median(data.summ3$steps, na.rm = TRUE )
+
+#The difference in mean total number of steps taken per day is: mean(data.summ3$steps, na.rm = TRUE ) - mean(data.summ$steps, na.rm = TRUE )`  
+#The difference in median total number of steps taken per day is: median(data.summ3$steps, na.rm = TRUE )  - median(data.summ$steps, na.rm = TRUE )
 
 ```
 
-There are `r nrow(data[is.na(data$steps),])` missing values in the dataset  
+
 The imputed mean total number of steps taken per day is: `r mean(data.summ3$steps, na.rm = TRUE )`  
 The imputed median total number of steps taken per day is: `r median(data.summ3$steps, na.rm = TRUE )`
 
 The difference in mean total number of steps taken per day is: `r mean(data.summ3$steps, na.rm = TRUE ) - mean(data.summ$steps, na.rm = TRUE )`  
-The imputed median total number of steps taken per day is: `r median(data.summ3$steps, na.rm = TRUE )  - median(data.summ$steps, na.rm = TRUE )`  
+The difference in median total number of steps taken per day is: `r median(data.summ3$steps, na.rm = TRUE )  - median(data.summ$steps, na.rm = TRUE )`  
 
 There is negligible impact of imputing missing values
 

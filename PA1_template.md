@@ -52,12 +52,20 @@ plot(x=data.summ2$interval, y=data.summ2$steps, type="l",main="Average steps per
 
 ```r
 data.max<-data.summ2[which.max(data.summ2$steps),]
+
+#maximum average steps:  data.max[1,]$steps
+#and found at interval:  data.max[1,]$interval
 ```
 
 The maximum average steps is 206.1698113 and found at interval 835
 
 
 ## Imputing missing values
+
+There are 2304 missing values in the dataset  
+The missing values will be replaced with means (of the non-missing values) of the corresponding interval.
+
+
 
 ```r
 data.corrected <- merge(data[is.na(data$steps),c("interval","date")],data.summ[,c("interval","steps")],by="interval")
@@ -69,12 +77,21 @@ hist(data.summ3$steps,breaks=20,main="Histogram of Total steps per day (imputed 
 
 ![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
 
-There are 2304 missing values in the dataset  
+```r
+#missing values in the dataset: nrow(data[is.na(data$steps),])
+#The imputed mean total number of steps taken per day is: mean(data.summ3$steps, na.rm = TRUE )
+#The imputed median total number of steps taken per day is: median(data.summ3$steps, na.rm = TRUE )
+
+#The difference in mean total number of steps taken per day is: mean(data.summ3$steps, na.rm = TRUE ) - mean(data.summ$steps, na.rm = TRUE )`  
+#The difference in median total number of steps taken per day is: median(data.summ3$steps, na.rm = TRUE )  - median(data.summ$steps, na.rm = TRUE )
+```
+
+
 The imputed mean total number of steps taken per day is: 1.0766189\times 10^{4}  
 The imputed median total number of steps taken per day is: 10765
 
 The difference in mean total number of steps taken per day is: 0  
-The imputed median total number of steps taken per day is: 0  
+The difference in median total number of steps taken per day is: 0  
 
 There is negligible impact of imputing missing values
 
