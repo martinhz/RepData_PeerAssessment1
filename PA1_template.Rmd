@@ -26,10 +26,10 @@ The median total number of steps taken per day is: `r median(data.summ$steps, na
 
 ## What is the average daily activity pattern?
 ```{r}
-data.summ <-summarise_each(group_by(data[!is.na(data$steps),], interval ), funs(mean))
-plot(x=data.summ$interval, y=data.summ$steps, type="l",main="Average steps per interval",
+data.summ2 <-summarise_each(group_by(data[!is.na(data$steps),], interval ), funs(mean))
+plot(x=data.summ2$interval, y=data.summ2$steps, type="l",main="Average steps per interval",
      xlab="interval", ylab="average steps")
-data.max<-data.summ[which.max(data.summ$steps),]
+data.max<-data.summ2[which.max(data.summ2$steps),]
 
 ```
 
@@ -37,7 +37,34 @@ The maximum average steps is `r data.max[1,]$steps` and found at interval `r dat
 
 
 ## Imputing missing values
+```{r}
+data.corrected <- merge(data[is.na(data$steps),c("interval","date")],data.summ[,c("interval","steps")],by="interval")
+data.combi<-rbind(data.corrected, data[!is.na(data$steps),])
+
+data.summ3 <-summarise_each(group_by(data.combi, date ), funs(sum))
+hist(data.summ3$steps,breaks=20,main="Histogram of Total steps per day (imputed data)")
 
 
+```
+
+There are `r nrow(data[is.na(data$steps),])` missing values in the dataset  
+The imputed mean total number of steps taken per day is: `r mean(data.summ3$steps, na.rm = TRUE )`  
+The imputed median total number of steps taken per day is: `r median(data.summ3$steps, na.rm = TRUE )`
+
+The difference in mean total number of steps taken per day is: `r mean(data.summ3$steps, na.rm = TRUE ) - mean(data.summ$steps, na.rm = TRUE )`  
+The imputed median total number of steps taken per day is: `r median(data.summ3$steps, na.rm = TRUE )  - median(data.summ$steps, na.rm = TRUE )`  
+
+There is negligible impact of imputing missing values
 
 ## Are there differences in activity patterns between weekdays and weekends?
+```{r}
+library(ggplot2)
+
+data.combi$day<-as.Date(data.combi$date,format = "%Y-%m-%d")
+data.combi$weekday<-ifelse(weekdays(data.combi$day) %in% c("zondag","zaterdag"),"Weekend", "Weekday")
+
+data.summ4 <-summarise_each(group_by(data.combi,  weekday, interval ), funs(mean))
+
+qplot(x=data.summ4$interval, y=data.summ4$steps, data=data.summ4, main="Average steps per interval",
+     xlab="interval", ylab="average steps", facets=weekday~., geom="line")
+```
